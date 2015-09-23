@@ -128,53 +128,54 @@ module.exports = function(app) {
         var pool = this.routes,
             self = this,
             name = o.name,
-            g,
-            fetcher;
-        if (! pool.some(function(y) {
-            if (y.name === name) {
-                g = y;
-                return true;
-            }
-        })) {
-            g = new CoreRouterRoute({
-                parent:self,
-                container:self.container,
-                name:name
-            });
-            g.managers.event.on('destroy', function() {
-                pool.splice(pool.indexOf(g),1);
-                if (g.cssElement)
-                    g.managers.dom.rm(g.cssElement);
-                if (router.current === g)
-                    router.current = g.parent;
-            });
-            var provider = router.getProviderForPath(g.path);
-            if (! provider)
-                throw { error:'No Route provider for path', route:g };
-            g.url = provider.url;
-            fetcher = provider.fetch(g).then(
-                function(j) {
-                    if (j.css)
-                        g.cssElement=dom.mk('style',dom.head, j.css);
-                    var ret = j.js(g);
-                    if (typeof ret === 'object' && ret instanceof Promise) {
-                        return ret.then(function() {
-                            return g;
-                        });
-                    } else {
-                        return g;
-                    }
+            g;
+        return Promise.resolve().then(function() {
+            if (! pool.some(function(y) {
+                if (y.name === name) {
+                    g = y;
+                    return true;
                 }
-            ).then(function() {
-                arrayInsert(pool,g,o);
-                return self.managers.event.dispatch('addRoute',g);
-            });
-        }
-        return (fetcher? fetcher : Promise.resolve()).then(function() {
+            })) {
+                g = new CoreRouterRoute({
+                    parent:self,
+                    container:self.container,
+                    name:name
+                });
+                g.managers.event.on('destroy', function() {
+                    pool.splice(pool.indexOf(g),1);
+                    if (g.cssElement)
+                        g.managers.dom.rm(g.cssElement);
+                    if (router.current === g)
+                        router.current = g.parent;
+                });
+                var provider = router.getProviderForPath(g.path);
+                if (! provider)
+                    throw { error:'No Route provider for path', route:g };
+                g.url = provider.url;
+                return provider.fetch(g).then(
+                    function(j) {
+                        if (j.css)
+                            g.cssElement=dom.mk('style',dom.head, j.css);
+                        var ret = j.js(g);
+                        if (typeof ret === 'object' && ret instanceof Promise) {
+                            return ret.then(function() {
+                                return g;
+                            });
+                        } else {
+                            return g;
+                        }
+                    }
+                ).then(function() {
+                    arrayInsert(pool,g,o);
+                    return self.managers.event.dispatch('addRoute',g);
+                });
+            }
+        }).then(function() {
+            var gMgrsEvt = g.managers.event;
             g.originalUri = o.uri;
-            return g.managers.event.dispatch('enter').then(function() {
+            return gMgrsEvt.dispatch('enter').then(function() {
                 if (!g._initilized)
-                    return g.managers.event.dispatch('init').then(function() {
+                    return gMgrsEvt.dispatch('init').then(function() {
                         g._initilized = true;
                     });
             }).then(function() {
