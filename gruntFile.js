@@ -4,7 +4,6 @@ module.exports = function(grunt) {
     var locales = ["fr"];
     var stagingDir = '.staging';
     var buildDirs  = ['build/debug','build/deploy'];
-    var mime = require('mime');
     var beginPort = 3006;
     var config = {
         pkg: grunt.file.readJSON('package.json'),
@@ -147,21 +146,15 @@ module.exports = function(grunt) {
                 keepalive : grunt.option('keepalive') === 1,
                 base : k,
                 middleware: function(connect, options, middlewares) {
-                    middlewares.unshift(function(req, res) {
-                        var url = req.originalUrl;
-                        if (url.substr(0,5) === '/cdn/') {
+                    middlewares.unshift(function(req, res, next) {
+                        var url = req.originalUrl,
+                            attr = url.substr(0,5);
+                        if (/(cdn|res)/.test(attr)) {
                             var c = k+'/'+url;
-                        if (grunt.file.exists(c)) {
-                            // mime type
-                                var type = mime.lookup(url);
-                                if (!res.getHeader('content-type')) {
-                                    res.setHeader('Content-Type', type);
-                                }
-                                res.end(grunt.file.read(c));
-                            } else {
-                                res.statusCode = 404;
-                                res.end("");
-                            }
+                            if (grunt.file.exists(c))
+                                return next();
+                            res.statusCode = 404;
+                            res.end("");
                         } else {
                             res.setHeader('Content-Type', 'text/html; charset=utf-8;');
                             res.end(grunt.file.read(k+'/index.html'));

@@ -1,16 +1,52 @@
 @import "../sass-global/mixins.scss";
+@import "../sass-global/variables.scss";
 
-@-webkit-keyframes igaro-spin {
-from { -webkit-transform: rotate(0deg); opacity: 0.2; }
-50% { -webkit-transform: rotate(180deg); opacity: 1; }
-to { -webkit-transform: rotate(360deg); opacity: 0.2; }
+@-webkit-keyframes igaro-loading {
+from { opacity: 0.1; }
+50% { opacity: 1; }
+to { opacity: 0.1; }
 }
 
-@keyframes igaro-spin {
-from { transform: rotate(0deg); opacity: 0.2; }
-50% { transform: rotate(180deg); opacity: 1; }
-to { transform: rotate(360deg); opacity: 0.2; }
+@keyframes igaro-loading {
+from { opacity: 0.1; }
+50% { opacity: 1; }
+to { opacity: 0.1; }
 }
+
+/* Lights */
+@font-face {
+    font-family: 'Open Sans';
+    src: font-url('OpenSans/OpenSans-Lights-webfont.eot');
+    src: font-url('OpenSans/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
+         font-url('OpenSans/OpenSans-Light-webfont.woff') format('woff'),
+         font-url('OpenSans/OpenSans-Light-webfont.ttf') format('truetype'),
+         font-url('OpenSans/OpenSans-Light-webfont.svg#OpenSansRegular') format('svg');
+    font-weight: 200;
+    font-style: normal;
+}
+/* Regular */
+@font-face {
+    font-family: 'Open Sans';
+    src: font-url('OpenSans/OpenSans-Regular-webfont.eot');
+    src: font-url('OpenSans/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         font-url('OpenSans/OpenSans-Regular-webfont.woff') format('woff'),
+         font-url('OpenSans/OpenSans-Regular-webfont.ttf') format('truetype'),
+         font-url('OpenSans/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+/* Bold */
+@font-face {
+    font-family: 'Open Sans';
+    src: font-url('OpenSans/OpenSans-Bold-webfont.eot');
+    src: font-url('OpenSans/OpenSans-Bold-webfont.woff') format('woff'),
+         font-url('OpenSans/OpenSans-Bold-webfont.ttf') format('truetype'),
+         font-url('OpenSans/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg'),
+         font-url('OpenSans/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
 
 * {
     box-sizing: border-box;
@@ -22,7 +58,7 @@ body {
     background-color:#fff;
     height:100%;
     color:#424347;
-    font-family: "Proxima Nova", "Open Sans", "Helvetica", "Arial";
+    font-family: "Open Sans", "Helvetica", "Arial";
     line-height:175%;
     font-size:12pt;
     -webkit-font-smoothing: antialiased;
@@ -31,7 +67,7 @@ body {
     >noscript {
       text-align:center;
     }
-    
+
     pre {
         white-space: pre-wrap;
     }
@@ -48,7 +84,7 @@ body {
     }
 
     a {
-        color:#0860a8; 
+        color:#0860a8;
         text-decoration:none;
         &:hover {
             color:#242c61;
@@ -114,7 +150,6 @@ body {
       }
 
       @media screen and (max-width: 1000px) {
-        //text-align:center;
         >fieldset {
           border:none;
           padding-left:0;
@@ -157,16 +192,15 @@ body {
       }
     }
 
-    thead td { white-space:nowrap;  }
     iframe { border:0;  }
     sup { font-weight:bold; }
     textarea,select,input:not([type='button']):not([type='submit']),[contenteditable="true"] {
-      color:#000; 
+      color:#000;
       padding:5px;
       margin:0;
-      border:1px solid #DDD; 
+      border:1px solid #DDD;
       border-top:1px solid #AFAFAF;
-      background-color:#FFF; 
+      background-color:#FFF;
       font-size:90%;
       &:hover { border:1px solid #CCC; border-top:1px solid #999; }
       &:focus { border-color:#2272b6; }
@@ -186,7 +220,7 @@ body {
       border-radius: 0.3em;
       font-size:90%;
     }
-    
+
     input[type="submit"] {
       border: 1px solid #1b4587;
       color: #fff;
@@ -269,34 +303,48 @@ body {
         width:100%;
         display:table;
         >div {
-            //z-index:99999999;
             position:relative;
             display:table-cell;
             vertical-align:middle;
             text-align:center;
-            transition: all 1s;
+            transition: color 1s ease-in;
+            -webkit-transition: color 1s ease-in;
             >div {
               margin:0 auto;
               display:inline-block;
             }
-            &:not(.error) >div {
-                border: 1.2em solid #000;
-                border-right-color: transparent;
-                border-radius: 50%;
-                -webkit-animation: igaro-spin 1.35s linear infinite;
-                animation: igaro-spin 1.35s linear infinite;
-                width:12em;
-                height:12em;
+            &:not(.error) {
+                font-size:2em;
+                >p {
+                    line-height:50%;
+                    opacity:0.1;
+                    -webkit-animation: igaro-loading 4s ease-in-out infinite;
+                    animation: igaro-loading 4s ease-in-out infinite;
+                    &:nth-child(1) {
+                        animation-delay:0s;
+                    }
+                    &:nth-child(2) {
+                        animation-delay:0.5s;
+                    }
+                    &:nth-child(3) {
+                        animation-delay:1s;
+                    }
+                    &:nth-child(4) {
+                        animation-delay:1.5s;
+                    }
+                    &:nth-child(5) {
+                        animation-delay:2s;
+                    }
+                }
             }
-            &.progress >div {
-                border-left-color: transparent;
-                animation-duration: 1.15s;
-                -webkit-animation-duration: 1.15s;
+            &.progress >p {
+                color:#114e17;
             }
         }
     }
 
     >.igaro-loading {
+        font-family: "Helvetica", "Verdana", "Arial"; // prevent dynamic font loading changing the font
         background-color:#fff;
         color:#000;
         >div {
@@ -315,6 +363,7 @@ body {
 
     >.igaro-router-loading {
         background-color:rgba(0,0,0,.85);
+        color:#fff;
         >div >div {
             border-top-color:#fff !important;
             border-bottom-color:#fff !important;
@@ -332,4 +381,3 @@ body {
         font-size:11pt;
     }
 }
-    

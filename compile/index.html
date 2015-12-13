@@ -11,19 +11,18 @@ var __igaroapp = {
     cdn : location.protocol === 'file:'? location.href+'/../cdn' : '/cdn',
     msgIncompatible : _tr("Your device or software is too old. Please upgrade."),
     msgErr : _tr("An unexpected error has occurred. Please email <b>app-support@igaro.com</b> for support."),
-    libs : { 
+    libs : {
         load :[
             { name:'conf.app.js' }
         ],
         local : [
-            { name:'3rdparty.fastclick.js' },       
+            { name:'3rdparty.fastclick.js' },
             { name:'3rdparty.cordova.css' }
         ],
         touch : [
             { name:'3rdparty.hammer.js' }
         ],
         fonts : [
-            { name:'opensans', module: { name:'lib.fonts.opensans.css' }}
         ]
     },
     version: 0.1,
@@ -40,46 +39,33 @@ if (location.protocol === 'file:') {
 if (! window.addEventListener) {
     s = document.createElement('script');
     s.src = __igaroapp.cdn + "/js/polyfill.ie.8.js";
-    async = false;
     head.appendChild(s);
 }
 if (! Array.prototype.map) {
     s = document.createElement('script');
     s.src = __igaroapp.cdn + "/js/polyfill.js.1.6.js";
-    async = false;
     head.appendChild(s);
 }
 if (!String.prototype.trim) {
     s = document.createElement('script');
     s.src = __igaroapp.cdn + "/js/polyfill.js.1.8.1.js";
-    async = false;
     head.appendChild(s);
 }
 if (! Object.keys) {
     s = document.createElement('script');
     s.src = __igaroapp.cdn + "/js/polyfill.js.1.8.5.js";
-    async = false;
     head.appendChild(s);
 }
 
 if (!( "classList" in document.createElement("_"))) {
     s = document.createElement('script');
     s.src = __igaroapp.cdn + "/js/polyfill.js.classList.js";
-    async = false;
-    head.appendChild(s);
-}
-
-if (! Object.assign) {
-    s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.es6.object.assign.js";
-    async = false;
     head.appendChild(s);
 }
 
 if (! window.Promise) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.es6.promises.js";
-    async = false;
+    s.src = __igaroapp.cdn + "/js/polyfill.es6.js";
     head.appendChild(s);
 }
 
@@ -104,31 +90,41 @@ var body = document.body,
     resetOverflow = function(conf) {
         if (! conf.noBodyStyleOverflowReset)
             bodyStyle.overflow = '';
-    };
-    loading = [];
-[0,1,2].forEach(function(i) {
-    var d = document.createElement('div');
-    (i? loading[i-1] : body).appendChild(d);
-    loading.push(d);
-});
-loading[0].className='igaro-loading';
+    },
+    loading = document.createElement('div'),
+    loadingStatus = document.createElement('div');
 bodyStyle.overflow = 'hidden';
+loading.className = 'igaro-loading';
+body.appendChild(loading);
+loading.appendChild(loadingStatus);
+[
+    'Loading', // en
+    'Chargement', // french
+    'Cargando', // spanish
+    'جار التحميل', // arabic
+    '载入中' // chinese
+].forEach(function(txt) {
+    var p = document.createElement('p');
+    p.innerHTML = txt;
+    loadingStatus.appendChild(p);
+});
+
 __igaroapp.init = {
     onProgress : function() {
-       loading[1].className='progress';
+        loadingStatus.className = 'progress';
     },
     onReady : function(app,conf) {
         setTimeout(function() {
-            body.removeChild(loading[0]);
+            body.removeChild(loading);
             resetOverflow(conf);
-        }, 50);
+        }, 20);
     },
     onError : function(app,conf,e) {
-        loading[1].className='error';
+        loadingStatus.className = 'error';
         resetOverflow(conf);
         e = typeof e === 'object' && e.error && e.error.incompatible? conf.msgIncompatible : conf.msgErr;
-        loading[2].innerHTML = Object.keys(e).map(function(n) {
-           return e[n]; 
+        loadingStatus.innerHTML = Object.keys(e).map(function(n) {
+           return e[n];
         }).join("<p>");
     }
 };

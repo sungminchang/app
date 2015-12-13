@@ -109,7 +109,7 @@ module.exports = function() {
                                 {
                                     name:'disabled',
                                     type:'boolean',
-                                    desc:_tr("The object state. Mainly used for DOM manipulation. No object properties are blocked, it is merely an indication which other methods can use to change logic. Default is false.")
+                                    desc:_tr("The object state. No object properties are blocked, it is merely an indication which other methods can use to switch logic. Default is false. Not to be confused with .isDisabled().")
                                 },
                                 {
                                     name:'hide',
@@ -120,6 +120,18 @@ module.exports = function() {
                                     name:'hidden',
                                     type:'boolean',
                                     desc:_tr("PARAM - Defines if the object should be hidden. Only applicable if the object has a container. Default is false.")
+                                },
+                                {
+                                    name:'isDisabled',
+                                    type:'function',
+                                    desc:_tr("Returns whether the object is disabled, propogating the check to the parent object. This is not to be confused with .disabled"),
+                                    returns: {
+                                        attributes : [
+                                            {
+                                                instanceof : { name:'Boolean' }
+                                            }
+                                        ]
+                                    }
                                 },
                                 {
                                     name:'managers',
@@ -194,6 +206,23 @@ module.exports = function() {
                     async:true
                 },
                 {
+                    name:'debounce',
+                    type:'function',
+                    desc:_tr("Debounces an operation by reference and delay. Useful for form inputs fields."),
+                    attributes: [
+                        {
+                            type:'*',
+                            required:true,
+                            desc: _tr("A unique reference, typically the object being debounced."),
+                        },
+                        {
+                            type:'number',
+                            desc: _tr("The delay to debounce, typically before the Promise is resolved. This defaults to 300 (ms) which is typical for input[text] and similar fields.")
+                        }
+                    ],
+                    async:true
+                },
+                {
                     name:'promiseSequencer',
                     type:'function',
                     desc:_tr("Reduces an array of Promises synchronously. Returns an array containing the output from each Promise."),
@@ -226,7 +255,7 @@ module.exports = function() {
                             }
                         ]
                     }
-                },
+                }
             ]
         };
 
