@@ -27,10 +27,10 @@ module.exports = function(app) {
                         height:'240px'
                     }
                 ).then(function(unveil) {
-                    coreRouterMgrsEvent.extend(unveil).on('to-in-progress',function(o) {
+                    coreRouterMgrsEvent.on('to-in-progress',function(o) {
                         if (o.value === route)
                             unveil.check(); // no return
-                    });
+                    }, { deps:[unveil] });
                     return unveil;
                 });
             })
