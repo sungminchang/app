@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 
         includereplace: {
             igarojs: {
-                src: stagingDir + '/cdn/js/igaro.js',
+                src: stagingDir + '/cdn/js/*.js',
                 dest: stagingDir + '/cdn/js'
             }
         },

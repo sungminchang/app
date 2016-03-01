@@ -547,7 +547,7 @@ module.exports = function(app) {
             if (data.extlinks) {
                 domMgr.mk('h1',v,_tr("External Links"));
                 data.extlinks.forEach(function(o) {
-                    var name,href;
+                    var name, href;
                     if (typeof o === 'string') {
                         name = href = o;
                     } else {
@@ -618,18 +618,21 @@ module.exports = function(app) {
                     ['polyfill.js.1.8.5', _tr("Polyfill deprecated browsers to Mozilla 1.8.5 specification.")],
                     ['polyfill.js.classList', _tr("Polyfill HTML5 classList helpers onto DOM elements.")],
                 ].map(function (o) {
-                    var n = o[0];
-                    var a = domMgr.mk('a',null,n,function() {
-                        this.href=n;
-                        this.addEventListener('click', function(evt) {
-                            evt.preventDefault();
-                            router.to(model.uriPath.concat(n));
-                        });
-                    });
+
+                    var module = o[0];
                     return {
                         columns : [
                             {
-                                content:a
+                                content : domMgr.mk('a',null,module,function() {
+
+                                    var url = model.getUrl(module);
+                                    this.href = url.toString();
+                                    this.addEventListener('click', function(evt) {
+
+                                        evt.preventDefault();
+                                        router.to(url);
+                                    });
+                                })
                             },
                             {
                                 content:o[1]
@@ -639,7 +642,9 @@ module.exports = function(app) {
                 })
             }
         }).then(function(tbl) {
+
             return tbl.addSearchColumns().then(function() {
+
                 return tbl;
             });
         });
