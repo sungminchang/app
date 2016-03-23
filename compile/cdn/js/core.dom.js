@@ -242,7 +242,7 @@
 
                 if (! purge)
                     this.purge(r,true);
-                r.innerHTML = '';
+                r.textContent = '';
                 if (typeof c === 'object') {
                     if (c instanceof HTMLElement || c instanceof DocumentFragment) {
                         r.appendChild(c);

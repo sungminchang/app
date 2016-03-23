@@ -28,7 +28,7 @@ module.exports = function(app) {
             header = domMgr.mk('div',wrapper,null,'header');
 
         // header
-        domMgr.mk('span',header,_tr("Welcome to <b>Igaro App</b> Javascript Framework"));
+        domMgr.mk('span',header, _tr("Welcome to <b>Igaro App</b> Javascript Framework"));
 
         var writeList = function(pool,list) {
 

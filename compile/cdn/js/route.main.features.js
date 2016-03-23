@@ -25,6 +25,12 @@ module.exports = function(app) {
 
         domMgr.mk('p',wrapper,_tr("Igaro's comes with a stack full of widgets, and creating new widgets is easy!"));
 
+        domMgr.mk('h1',wrapper,_tr("Widgets"));
+        domMgr.mk('p',wrapper,_tr("This framework comes with the kitchen sink!"));
+        domMgr.mk('p',wrapper,_tr("Below is  a sample, you'll find a complete list on the module page (instance.* files)."));
+        domMgr.mk('h2',wrapper,_tr("Same Space"));
+        domMgr.mk('p',wrapper,_tr("This example displays elements in the same space using CSS3 effects to transition between each space. It's great for slideshows!"));
+
         return model.addSequence({
             container:wrapper,
             promises:[
