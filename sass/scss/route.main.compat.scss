@@ -5,7 +5,7 @@
 body >.core-router >.main >.compat >.wrapper {
     @include layoutStandard;
 
-	>.instance-table >table >tbody >tr >td {
+	>p >.instance-table >table >tbody >tr >td {
 
         @include instanceTableColStatus
     }

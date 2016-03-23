@@ -102,7 +102,7 @@
                 return this.getSearch(url)[name];
             },
 
-            /* Returns the hash from a url (or currnt)
+            /* Returns the hash from a url (or currrent)
              * @param {string} [url] - optional url to parse
              * @returns {string} hash value
              */
@@ -111,27 +111,6 @@
                 if (! url)
                     url = getCurrent();
                 return  url.split('#')[1];
-            },
-
-            /* Replaces a param within a url
-             * @param {string} param - to replace
-             * @param {string} value - to use
-             * @param {string} [url] optional url to use, if not the current;
-             * @returns {string} search value
-             */
-            replaceSearchValue : function(param,value,url) {
-
-                if (! url)
-                    url = getCurrent();
-                if (url.indexOf(param + "=") >= 0) {
-                    var prefix = url.substring(0, url.indexOf(param)),
-                        suffix = url.substring(url.indexOf(param)).substring(url.indexOf("=") + 1);
-                    suffix = (suffix.indexOf("&") >= 0) ? suffix.substring(suffix.indexOf("&")) : "";
-                    url = prefix + param + "=" + value + suffix;
-                } else {
-                    url += url.indexOf("?") < 0? "?" + param + "=" + value : "&" + param + "=" + value;
-                }
-                return url;
             },
 
             /* Returns manager for a url

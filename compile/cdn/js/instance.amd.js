@@ -79,7 +79,7 @@
                 var workerSucEvt = function(o) {
 
                     if (swrks.includes(o.x)) {
-                        onProgress();
+                        onProgress(o.children);
                         chkComplete();
                     }
                 };
@@ -144,6 +144,7 @@
                     }
                 });
 
+                onProgress();
                 chkComplete();
             });
         };
@@ -204,8 +205,12 @@
             return workerEventChannel.dispatch('start').then(function() {
 
                 return xhr.get({ res:file }).then(function(data) {
+                    return onProgress().then(function(){
 
-                    //onProgress();
+                        return data;
+                    });
+
+                }).then(function(data) {
 
                     switch (type) {
                         case 'js':
