@@ -69,6 +69,12 @@ if (! window.Promise) {
     head.appendChild(s);
 }
 
+if (! Array.prototype.includes) {
+    s = document.createElement('script');
+    s.src = __igaroapp.cdn + "/js/polyfill.es7.js";
+    head.appendChild(s);
+}
+
 s = document.createElement('link');
 s.type = "text/css";
 s.rel = "stylesheet";
@@ -92,38 +98,43 @@ var body = document.body,
             bodyStyle.overflow = '';
     },
     loading = document.createElement('div'),
-    loadingStatus = document.createElement('div');
-bodyStyle.overflow = 'hidden';
-loading.className = 'igaro-loading';
-body.appendChild(loading);
-loading.appendChild(loadingStatus);
-[
-    'Loading', // en
-    'Chargement', // french
-    'Cargando', // spanish
-    'جار التحميل', // arabic
-    '载入中' // chinese
-].forEach(function(txt) {
-    var p = document.createElement('p');
-    p.innerHTML = txt;
-    loadingStatus.appendChild(p);
-});
+    loadingWrapper = document.createElement('div');
+    bodyStyle.overflow = 'hidden';
+    loading.className = 'igaro-loading';
+    loading.appendChild(loadingWrapper);
+    body.appendChild(loading);
 
 __igaroapp.init = {
-    onProgress : function() {
-        loadingStatus.className = 'progress';
+    onProgress : function(app,conf,v) {
+        loadingWrapper.textContent='';
+        if (v.workers[0].done && ! v.children) {
+
+            loadingWrapper.className = 'working';
+            return;
+        }
+        while (v) {
+            v.workers.forEach(function(w) {
+                var p = document.createElement('div');
+                p.className = 'worker';
+                var i = document.createElement('div');
+                i.className = w.done? 'done' : 'working';
+                p.appendChild(i);
+                loadingWrapper.appendChild(p);
+            });
+            v = v.children;
+        }
     },
     onReady : function(app,conf) {
         setTimeout(function() {
             body.removeChild(loading);
             resetOverflow(conf);
-        }, 20);
+        }, 5);
     },
     onError : function(app,conf,e) {
         loadingStatus.className = 'error';
         resetOverflow(conf);
         e = typeof e === 'object' && e.error && e.error.incompatible? conf.msgIncompatible : conf.msgErr;
-        loadingStatus.innerHTML = Object.keys(e).map(function(n) {
+        loadingWrapper.innerHTML = Object.keys(e).map(function(n) {
            return e[n];
         }).join("<p>");
     }

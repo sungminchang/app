@@ -107,14 +107,20 @@
         }).call(env);
 
         // load requested modules
-        return new app['instance.amd']().get({ modules:modules }).then(function() {
+        var ai = appConf.init || {};
+        return new app['instance.amd']().get({
+            modules:modules,
+            onProgress:ai.onProgress? function(v) {
 
-            var ai = appConf.init;
-            if (ai && ai.onProgress)
-                ai.onProgress(app,appConf);
+                ai.onProgress(app,appConf,v);
+            } : null
+        }).then(function(v) {
+
+            //if (ai.onProgress)
+            //    ai.onProgress(app,appConf,v);
             return app['core.events'].rootEmitter.dispatch('state.init').then(function() {
 
-                if (ai && ai.onReady)
+                if (ai.onReady)
                     ai.onReady(app,appConf);
                 return app;
             });

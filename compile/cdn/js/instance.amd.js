@@ -68,33 +68,50 @@
                 var chkComplete = function() {
 
                     if (swrks.every(function (w) {
+
                         return w.done;
                     })) {
                         end();
                         resolve();
                     }
                 };
+
                 var workerSucEvt = function(o) {
 
-                    if (swrks.indexOf(o.x) === -1)
-                        return;
-                    if (self.onProgress)
-                        self.onProgress();
-                    chkComplete();
+                    if (swrks.includes(o.x)) {
+                        onProgress();
+                        chkComplete();
+                    }
                 };
+
                 var workerErrEvt = function(o) {
 
-                    if (swrks.indexOf(o.x) > -1) {
+                    if (swrks.includes(o.x)) {
                         end();
                         reject(o);
                     }
                 };
+
+                var workerProgressEvt = function(o) {
+
+                    if (swrks.includes(o.x))
+                        onProgress(o.children);
+                };
+
                 var end = function() {
 
                     workerEventChannel.remove(workerErrEvt,'error');
                     workerEventChannel.remove(workerSucEvt,'success');
+                    workerEventChannel.remove(workerProgressEvt,'progress');
                 };
 
+                var onProgress = function(children) {
+
+                    if (self.onProgress)
+                        self.onProgress({ workers:swrks, children:children });
+                };
+
+                workerEventChannel.on('progress', workerProgressEvt);
                 workerEventChannel.on('success', workerSucEvt);
                 workerEventChannel.on('error', workerErrEvt);
 
@@ -110,6 +127,7 @@
 
                     // if there's already a worker for this module, find it, else create one
                     if (! workers.some(function (w) {
+
                         if (w.module.name === n) {
                             wk = w;
                             return true;
@@ -123,8 +141,6 @@
                     if (! wk.done) {
                         swrks.push(wk);
                         wk.run();
-                    } else if (self.onProgress) {
-                        self.onProgress();
                     }
                 });
 
@@ -178,11 +194,18 @@
                 mod = this.module,
                 self = this;
 
+            var onProgress = function(o) {
+
+                return workerEventChannel.dispatch('progress', { x:self, children:o });
+            };
+
             this.running = true;
 
             return workerEventChannel.dispatch('start').then(function() {
 
                 return xhr.get({ res:file }).then(function(data) {
+
+                    //onProgress();
 
                     switch (type) {
                         case 'js':
@@ -192,6 +215,7 @@
                             };
 
                             (function() {
+
                                 eval(data); //jshint ignore:line
                             }).call(env);
 
@@ -203,7 +227,8 @@
                                 if (module.requires.length) {
                                     return new InstanceAmd().get({
                                         repo:mod.depRepoRevert? repo : mod.repo,
-                                        modules:module.requires
+                                        modules:module.requires,
+                                        onProgress : onProgress
                                     });
                                 }
                             }).then(function() {
