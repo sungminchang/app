@@ -166,7 +166,7 @@
                 }).then(function(container) {
 
                     values.push(container);
-                    if (typeof container === 'object' && (container instanceof Node || container.container))
+                    if (typeof container === 'object' && (container instanceof Array || container instanceof Node || container.container))
                         dom.append(o.container, container);
 
                 });

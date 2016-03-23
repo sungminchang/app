@@ -223,7 +223,7 @@
                                 });
                             });
                         case 'css':
-                            dom.mk('style',head,data);
+                            dom.mk('style',head).textContent = data;
                     }
                 }).then(function() {
 
