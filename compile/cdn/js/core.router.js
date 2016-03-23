@@ -26,7 +26,9 @@
             var self = this;
             this.name = o.name;
             this.container = function(dom) {
+
                 return dom.mk('div',o.container,null,function() {
+
                     this.className = 'route';
                     self.wrapper = dom.mk('div',this,null,'wrapper');
                     if (typeof o.name === 'string')
@@ -46,6 +48,9 @@
             bless.call(this,o);
         };
 
+        /* Counts the level at which the route sits within the tree
+         * @returns {number}
+         */
         CoreRouterRoute.prototype.getTreeLevel = function() {
 
             var i = -1,
@@ -58,11 +63,17 @@
             return i;
         };
 
+        /* Works out if the route is base or a sibling of (therefore at the same tree level)
+         * @returns {Boolean}
+         */
         CoreRouterRoute.prototype.isAtBase = function() {
 
             return this.getTreeLevel() === router.rootPathLevel;
         };
 
+        /* Returns a routes full uri based path
+         * @returns {Array} containing paths / uri data
+         */
         CoreRouterRoute.prototype.uriPath = function() {
 
             var parent = this,
@@ -76,9 +87,21 @@
                 parent = parent.parent;
             }
 
-            path = path.reverse();
+            return path.reverse();
+        };
 
-            return path;
+        /* Shortcut to append child paths onto a routes path and call router.to
+         * @param {Array} path - path(s) to append
+         * @param {object [search] - query to pass
+         * @param {string} [hash] - hash to pass
+         * @returns {Promise}
+         */
+        CoreRouterRoute.prototype.to = function(path,search,hash) {
+
+            if (! (path instanceof Array))
+                throw new TypeError("First argument must be instanceof Array");
+
+            return router.to(this.uriPath().concat(path),search,hash);
         };
 
         /* Dynamically adds a manager to an route after its been blessed
@@ -89,7 +112,7 @@
         CoreRouterRoute.prototype.addManager = function(name,module) {
 
             if (typeof name !== 'string')
-                throw new TypeError("First argument must be of stype string");
+                throw new TypeError("First argument must be of type string");
 
             if (typeof module !== 'object' || ! module.createMgr)
                 throw new TypeError("Second argument must be an object supplying a manager");
@@ -378,18 +401,31 @@
             },
 
             /* The main routing function. Handles errors making it user event sane
-             * @param {CoreURLMgr} [url] - see core.url or make one using router.getUrl
-             * @param {boolean} [noPush] - prevent url update. Default is false
+             * @param {(CoreURLMgr|Array)} [a] - see core.url (or make one using router.getUrl). Can also take an array of path data.
+             * @param {(object|boolean)} [b] - if a is Array, this is search query data, otherwise it prevents url update. Default is null|false.
+             * @param {(string|boolean)} [c] - if a is Array, this is hash data, otherwise it is unused.
+             * @param {boolean} [d] - if a is Array, this defines if the url shouldn't be updated. Default is false.
              * @returns {Promise} indicating success
              */
-            to : function(url, noPush) {
+            to : function(a,b,c,d) {
 
-                if (!(url instanceof coreUrl.__CoreURLMgr))
-                    throw new TypeError("First argument must be instance of CoreURLMgr");
+                if (a instanceof coreUrl.__CoreURLMgr) {
 
-                var path = url.path,
-                    search = url.search,
-                    hash = url.hash;
+                    var path = a.path,
+                        search =a.search,
+                        hash = a.hash,
+                        noPush = b;
+
+                } else if (a instanceof Array) {
+
+                    var path = a,
+                        search = b,
+                        hash = c,
+                        noPush = d;
+                } else {
+
+                    throw new TypeError("First argument must be instance of CoreURLMgr or Array");
+                }
 
                 ++this.requestId;
 

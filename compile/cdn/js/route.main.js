@@ -91,7 +91,7 @@ module.exports = function(app) {
                         var domMgr = list.managers.dom;
                         return domMgr.mk('section', null, [
                             domMgr.mk('h1', null, _tr('Insight')),
-                            domMgr.mk('p', null, _tr("HTML falters when used for declaring dynamic views in web-applications, and most modern frameworks deal with HTML’s shortcomings by introducing sync and data binding overheads. Looking for an alternative?")),
+                            domMgr.mk('p', null, _tr("HTML falters when used for declaring dynamic views in web-applications, and most JavaScript frameworks deal with this shortcoming by introducing sync and data binding overheads. Looking for an alternative?")),
                             list.container
                         ],'first');
                     });
@@ -100,7 +100,7 @@ module.exports = function(app) {
                 objectMgr.create('list').then(function (list) {
 
                     return writeList([
-                        ['structure',_tr("Structure")],
+                        ['structure',_tr("Basics")],
                         ['bless', _tr("Bless")],
                         ['async', _tr("Async")],
                         ['events',_tr("Events")],
@@ -117,7 +117,7 @@ module.exports = function(app) {
                         var domMgr = list.managers.dom;
                         return domMgr.mk('section', null, [
                             domMgr.mk('h1', null, _tr("Documentation")),
-                            domMgr.mk('p', null, _tr("Learn how Igaro's architecture is key to the success of everything built upon it (you wouldn't build a house on a base of mud) and how it's radical departure from the norms will leave you coding faster, with greater productivity and no headache. All of Igaro App's modules are documented and come with demos.")),
+                            domMgr.mk('p', null, _tr("All Igaro App's modules are documented via JSDoc, but the online help is more exhaustive and comes with demos.")),
                             list.container
                         ]);
                     });
