@@ -350,17 +350,53 @@ body {
         background-color:#fff;
         color:#000;
         >div {
+
+            padding:1em;
+
             &.error {
                 background-color:#fff;
                 > div {
-                  padding:10em 1em 1em 1em;
+                  padding:9em 1em 1em 1em;
                   background-size:9em 9em;
                   background-position: 50% 0;
                   background-repeat: no-repeat;
-                  background-image: inline-image("error.svg");
+                  background-image: inline-image("igaro/error.svg");
+                }
+            }
+
+            &.working {
+                  background-position: 50% 50%;
+                  background-repeat: no-repeat;
+                  background-image: inline-image("igaro/spinner.gif");
+            }
+
+            >.worker {
+
+                border-radius:0.2em;
+                border: 1px solid #eee;
+                margin-bottom:0.5em;
+
+                &:not(:last-child) {
+                    margin-right:0.5em;
+                }
+
+                >div {
+                    width:1em;
+                    height:1em;
+                }
+
+                >.done {
+                    background-color:$common-trafficlight-green;
+                    box-shadow: 0 0 0.4em $common-trafficlight-green;
+                }
+
+                >.working {
+                    background-color:$common-trafficlight-red;
+                    box-shadow: 0 0 0.4em $common-trafficlight-red;
                 }
             }
         }
+
     }
 
     >.igaro-router-loading {
