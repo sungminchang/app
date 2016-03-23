@@ -24,7 +24,7 @@ module.exports = function(app) {
         this.name = 'item';
         this.container = function(dom) {
 
-            return dom.mk('li',o.parent,o.content,o.className);
+            return dom.mk('li',o.parent.ol,o.content,o.className);
         };
         bless.call(this,o);
     };
@@ -37,12 +37,16 @@ module.exports = function(app) {
      */
     var InstanceList = function(o) {
 
+        var self = this;
         o = o || {};
         this.name='instance.list';
         this.asRoot=true;
         this.container=function(dom) {
 
-            return dom.mk('ol',o,null,o.className);
+            return dom.mk('div',o,null,function() {
+
+                self.ol = dom.mk('ol',this,null,o.className);
+            });
         };
         this.children = {
             items:'item'
@@ -116,31 +120,38 @@ module.exports = function(app) {
             throw new TypeError("Second argument must be of type number");
 
         var items = this.items,
-            c = this.container,
-            li = o.container,
-            i = items.indexOf(listItem);
+            ol = this.ol,
+            li = listItem.container,
+            i = items.indexOf(listItem),
+            itemCnt = items.length;
 
+        // only one item?
+        if (itemCnt === 1)
+            return Promise.resolve();
+
+        // cehck exists
         if (i === -1)
             throw new Error("InstanceListItem not within InstanceList pool");
 
-        if (places+i >= items.length) {
-            places += i;
+        // places reducer
+        if (places+i >= itemCnt) {
+            places += i-1;
             while (places >= 0) {
-                places -= items.length;
+                places -= (itemCnt-1);
             }
-            --places;
         }
 
-        if (li.parentNode)
-            c.removeChild(li);
-
+        // movidy array
         items.splice(i+places,0,items.splice(i,1)[0]);
+
+        // get new pos
         i = items.indexOf(listItem);
 
-        if (i === items.length-1) {
-            c.appendChild(li);
+        // end of array?
+        if (i === itemCnt-1) {
+            ol.appendChild(li);
         } else {
-            c.insertBefore(li,items[i+1].container);
+            ol.insertBefore(li,items[i+1].container);
         }
 
         return this.managers.event.dispatch('shift',listItem);
