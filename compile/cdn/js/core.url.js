@@ -59,7 +59,7 @@
 
             /* Path value from a url (or current).
              * @param {string} [url] - optional url to parse
-             * @returns {object} literal of values
+             * @returns {Array} containing paths
              */
             getPath : function(url) {
 

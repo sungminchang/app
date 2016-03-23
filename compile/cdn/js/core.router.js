@@ -202,10 +202,10 @@
         /* Shortcut to allow a route to detect if it's the base root (ie main within header/main/footer
          * @returns {boolean}
          */
-        //CoreRouterRoute.prototype.isBase = function() {
+        CoreRouterRoute.prototype.isBase = function() {
 
-          //  return this === router.base;
-        //};
+            return this === router.base;
+        };
 
         /* Returns a child route by its name (aka folder on the uri)
          * @param {string} name - to search for
