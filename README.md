@@ -22,4 +22,5 @@ All modules are comprehensibly documented in the /modules section within the dem
 - [browser] fixes for IE8+
 - font.glyph.awesome -> included!
 - core.url -> supports a URL object which can be passed to the router
+- instance.amd -> add module and app version support to module request
 

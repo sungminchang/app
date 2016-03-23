@@ -1,6 +1,6 @@
 (function(env) {
 
-    module.exports = function(app) {
+    module.exports = function(app,params) {
 
         "use strict";
 
@@ -9,6 +9,7 @@
             bless = app['core.object'].bless,
             dom = app['core.dom'],
             head = dom.head,
+            version = encodeURIComponent(params.version),
             workers = [
                 'core.events',
                 'core.object',
@@ -162,20 +163,31 @@
             bless.call(this,o);
 
             var mod = this.module = o.module,
-                modname = this.module.name;
+                modname = this.module.name,
+                type = this.type,
+                modVersion = mod.version;
 
-            if (! this.type) {
+            if (! type) {
 
-                // attempt to discover type from extension
+                // attempt to auto discover type from extension
                 var e = /^.+\.([^.]+)$/.exec(modname.toLowerCase());
-                this.type = e === null? '' : e[1];
+                type = this.type = e === null? '' : e[1];
             }
 
-            var type = this.type;
-            this.file = mod.repo+'/'+(mod.nosub? '' : type+'/')+modname;
-
+            // must be js or css
             if (! /css|js/.test(type))
                 throw new Error('instance.amd can\'t handle file type: '+modname);
+
+            var file = mod.repo+'/'+(mod.nosub? '' : type+'/')+modname+'?';
+
+            // add version
+            if (modVersion)
+                file += 'v='+modVersion+'&';
+
+            // add app version
+            file += 'av='+version;
+
+            this.file = file;
 
             this.done = false;
             workers.push(this);

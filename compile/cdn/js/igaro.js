@@ -48,8 +48,12 @@
             f=b("sans-serif");
             libs.fonts.forEach(function (font) {
                 var a = font.name;
-                if (! (d!==b(a+",monospace") || f!==b(a+",sans-serif") ||e!==b(a+",serif")))
-                    modules.push(font.module);
+                if (! (d!==b(a+",monospace") || f!==b(a+",sans-serif") ||e!==b(a+",serif"))) {
+                    font.name ='font.'+a.toLowerCase().replace(/\ /, function() {
+                        return '';
+                    })+'.css';
+                    modules.push(font);
+                }
             });
         }
 

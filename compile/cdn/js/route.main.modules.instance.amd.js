@@ -53,7 +53,12 @@ module.exports = function() {
                                 attributes : [{
                                     instanceof: { name:'Array' }
                                 }]
-                            }
+                            },
+                            {
+                                name:'version',
+                                type:'string',
+                                desc : _tr("Supply a version to append to the request URL. This is in addition to the app build version.")
+                            },
                         ]
                     },
                     {

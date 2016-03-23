@@ -10,7 +10,7 @@
 var __igaroapp = {
     cdn : location.protocol === 'file:'? location.href+'/../cdn' : '/cdn',
     msgIncompatible : _tr("Your device or software is too old. Please upgrade."),
-    msgErr : _tr("An unexpected error has occurred. Please email <b>app-support@igaro.com</b> for support."),
+    msgErr : _tr("An unexpected error has occurred.<p>Please email <b>app-support@igaro.com</b> for support."),
     libs : {
         load :[
             { name:'conf.app.js' }
@@ -23,62 +23,64 @@ var __igaroapp = {
             { name:'3rdparty.hammer.js' }
         ],
         fonts : [
+            { name:'Open Sans' }
         ]
     },
-    version: 0.1,
+    version: 1.4,
     timestamp : new Date(),
     debug : new RegExp("^(3006|3007)$").test(location.port)
 };
 var s,
+    version = '?va='+encodeURIComponent(__igaroapp.version),
     head = document.getElementsByTagName('head')[0];
 if (location.protocol === 'file:') {
     s = document.createElement('script');
-    s.src = "cordova.js";
+    s.src = "cordova.js"+version;
     head.appendChild(s);
 }
 if (! window.addEventListener) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.ie.8.js";
+    s.src = __igaroapp.cdn + "/js/polyfill.ie.8.js"+version;
     head.appendChild(s);
 }
 if (! Array.prototype.map) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.js.1.6.js";
+    s.src = __igaroapp.cdn + "/js/polyfill.js.1.6.js"+version;
     head.appendChild(s);
 }
 if (!String.prototype.trim) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.js.1.8.1.js";
+    s.src = __igaroapp.cdn + "/js/polyfill.js.1.8.1.js"+version;
     head.appendChild(s);
 }
 if (! Object.keys) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.js.1.8.5.js";
+    s.src = __igaroapp.cdn + "/js/polyfill.js.1.8.5.js"+version;
     head.appendChild(s);
 }
 
 if (!( "classList" in document.createElement("_"))) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.js.classList.js";
+    s.src = __igaroapp.cdn + "/js/polyfill.js.classList.js"+version;
     head.appendChild(s);
 }
 
 if (! window.Promise) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.es6.js";
+    s.src = __igaroapp.cdn + "/js/polyfill.es6.js"+version;
     head.appendChild(s);
 }
 
 if (! Array.prototype.includes) {
     s = document.createElement('script');
-    s.src = __igaroapp.cdn + "/js/polyfill.es7.js";
+    s.src = __igaroapp.cdn + "/js/polyfill.es7.js"+version;
     head.appendChild(s);
 }
 
 s = document.createElement('link');
 s.type = "text/css";
 s.rel = "stylesheet";
-s.href = __igaroapp.cdn + "/css/igaro.css";
+s.href = __igaroapp.cdn + "/css/igaro.css"+version;
 head.appendChild(s);
 </script>
 
@@ -131,7 +133,7 @@ __igaroapp.init = {
         }, 5);
     },
     onError : function(app,conf,e) {
-        loadingStatus.className = 'error';
+        loadingWrapper.className = 'error';
         resetOverflow(conf);
         e = typeof e === 'object' && e.error && e.error.incompatible? conf.msgIncompatible : conf.msgErr;
         loadingWrapper.innerHTML = Object.keys(e).map(function(n) {
@@ -141,7 +143,7 @@ __igaroapp.init = {
 };
 
 var s = document.createElement('script');
-s.src = __igaroapp.cdn + "/js/igaro.js";
+s.src = __igaroapp.cdn+"/js/igaro.js"+version;
 document.getElementsByTagName('head')[0].appendChild(s);
 </script>
 
