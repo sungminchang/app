@@ -209,7 +209,7 @@
                             }).then(function() {
 
                                 var m = self.module.name,
-                                    s = m.substr(0,m.length-3);
+                                    s = m.slice(0,-3);
 
                                 // run function
                                 if (typeof exports === 'function')

@@ -472,7 +472,7 @@ module.exports = function(app) {
                     container:cc,
                     hideable: true,
                     id:model.path.join('.')+'.democode'
-                }).catch(function(e) {
+                })['catch'](function(e) {
                     debugMgr.handle(e);
                 });
                 domMgr.mk('pre',v, data.demo.trim(), 'democode');
@@ -481,7 +481,7 @@ module.exports = function(app) {
                 try {
                     var r = eval(data.demo);
                     if (r instanceof Promise) {
-                        r.catch(function (e) {
+                        r['catch'](function (e) {
                             debugMgr.handle(e);
                         });
                     }
@@ -495,13 +495,8 @@ module.exports = function(app) {
                 domMgr.mk('p',v,null,function() {
                     var s = this;
                     data.dependencies.forEach(function(o) {
-                        domMgr.mk('button',s,o).addEventListener('click', function(evt) {
-                            evt.preventDefault();
-                            this.disabled = true;
-                            var self= this;
-                            router.to(model.path+'/'+this.value).catch().then(function () {
-                                self.disabled = false;
-                            });
+                        domMgr.mk('button',s,o).addEventListener('click', function() {
+                            model.to([this.textContent.slice(0,-3)]);
                         });
                     });
                 });
@@ -520,13 +515,8 @@ module.exports = function(app) {
                 domMgr.mk('p',v,null,function() {
                     var s = this;
                     data.related.sort().forEach(function(o) {
-                        domMgr.mk('button',s,o).addEventListener('click', function(evt) {
-                            evt.preventDefault();
-                            this.disabled = true;
-                            var self= this;
-                            router.to(model.uriPath.concat(this.innerHTML)).catch().then(function () {
-                                self.disabled = false;
-                            });
+                        domMgr.mk('button',s,o).addEventListener('click', function() {
+                            model.to([this.textContent.slice(0,-3)]);
                         });
                     });
                 });
